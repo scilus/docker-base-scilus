@@ -1,11 +1,11 @@
-# singularity-base-tractoflow
-Base container containing dependencies that do not frequently change for the Tractoflow singularity.
+# docker-base-scilus
+Base container containing dependencies that do not frequently change for SCIL flows.
 
 Build commands:
 
-Before build the Docker: `sudo docker image rm singularity-base-tractoflow:docker`
+Before build the Docker: `sudo docker image rm docker-base-scilus:latest`
 
-To build the Docker: `sudo docker build . -t "singularity-base-tractoflow:docker"`
+To build the Docker: `sudo docker build . -t "docker-base-scilus:latest"`
 
 Dependencies versions:
 
