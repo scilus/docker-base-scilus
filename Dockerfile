@@ -153,9 +153,18 @@ RUN ./configure --prefix=/usr/ --enable-autotools                   \
     make install
 
 WORKDIR /VTK-build
-RUN cmake -DCMAKE_BUILD_TYPE=Release -DVTK_WRAP_PYTHON=ON -DVTK_USE_X=OFF -DBUILD_SHARED_LIBS=ON -DVTK_OPENGL_HAS_OSMESA=ON -DVTK_DEFAULT_RENDER_WINDOW_OFFSCREEN=ON -DOPENGL_gl_LIBRARY=/usr/lib/libglapi.so -DOSMESA_INCLUDE_DIR=/usr/include/ -DOSMESA_LIBRARY=/usr/lib/libOSMesa.so -DCMAKE_INSTALL_PREFIX=/usr/ ../VTK-src/VTK* &&\
+RUN PY_VER=3.7 && PYTHON_OPTIONS="\
+    -DVTK_PYTHON_VERSION:STRING=${PY_VER} \
+    -DPYTHON_EXECUTABLE:PATH=${MAIN_PATH}/bin/python${PY_VER} \
+    -DPYTHON_LIBRARY:PATH=${MAIN_PATH}/lib/${PY_LIB} \
+    -DPYTHON_LIBRARIES:PATH=${MAIN_PATH}/lib/${PY_LIB} \
+    -DPYTHON_INCLUDE_DIR:PATH=${MAIN_PATH}/include/${PY_INC} \
+    -DPYTHON_INCLUDE_DIRS:PATH=${MAIN_PATH}/include/${PY_INC} \
+    -DVTK_INSTALL_PYTHON_MODULE_DIR:PATH=${MAIN_PATH}/lib/python${PY_VER}/site-packages \
+    "
+RUN cmake $PYTHON_OPTIONS -DCMAKE_BUILD_TYPE=Release -DVTK_WRAP_PYTHON=ON -DVTK_USE_X=OFF -DBUILD_SHARED_LIBS=ON -DVTK_OPENGL_HAS_OSMESA=ON -DVTK_DEFAULT_RENDER_WINDOW_OFFSCREEN=ON -DOPENGL_gl_LIBRARY=/usr/lib/libglapi.so -DOSMESA_INCLUDE_DIR=/usr/include/ -DOSMESA_LIBRARY=/usr/lib/libOSMesa.so -DCMAKE_INSTALL_PREFIX=/usr/ ../VTK-src/VTK* &&\
     make -j 8 &&\
     make install
-
+RUN vtkpython --version
 ENV PYTHONPATH=/usr/lib/x86_64-linux-gnu/python3.7/site-packages/:/usr/bin/
 ENV LD_LIBRARY_PATH=/usr/bin/
