@@ -184,3 +184,5 @@ RUN mv /usr/bin/bk_python /usr/bin/python
 RUN vtkpython --version
 ENV PYTHONPATH=/usr/lib/x86_64-linux-gnu/python3.7/site-packages/:/usr/bin/
 ENV LD_LIBRARY_PATH=/usr/bin/
+
+WORKDIR /
