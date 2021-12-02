@@ -132,9 +132,6 @@ RUN tar zxvf $VTK && rm $VTK
 WORKDIR /mesa-src
 RUN tar zxvf $MESA && rm $MESA
 
-ENV PYTHON_INCLUDE_DIR=/usr/include/python3.7
-ENV PYTHON_LIBRARY=/usr/lib/python3.7/config-3.7m-x86_64-linux-gnu/libpython3.7.so
-RUN pip3 install -U setuptools
 WORKDIR /mesa-src/mesa-19.0.8
 RUN apt install -y xorg-dev\
                    llvm-7 llvm-7-dev llvm-7-runtime
@@ -152,19 +149,38 @@ RUN ./configure --prefix=/usr/ --enable-autotools                   \
     make -j 10 &&\
     make install
 
+
+RUN update-alternatives --config python3 &&\
+    update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 1 &&\
+    update-alternatives  --set python3 /usr/bin/python3.7
+
+ENV PYTHON_INCLUDE_DIR=/usr/include/python3.7
+ENV PYTHON_LIBS=/usr/lib/python3.7/config-3.7m-x86_64-linux-gnu/libpython3.7.so
+ENV PYTHON_LIBRARY=/usr/lib/python3.7/config-3.7m-x86_64-linux-gnu/libpython3.7.so
+RUN pip3 install -U setuptools
+
+RUN mv /usr/bin/python2 /usr/bin/bk_python2
+RUN mv /usr/bin/python /usr/bin/bk_python
+RUN ln -s /usr/bin/python3.7 /usr/bin/python
+
 WORKDIR /VTK-build
-RUN PY_VER=3.7 && PYTHON_OPTIONS="\
-    -DVTK_PYTHON_VERSION:STRING=${PY_VER} \
-    -DPYTHON_EXECUTABLE:PATH=${MAIN_PATH}/bin/python${PY_VER} \
-    -DPYTHON_LIBRARY:PATH=${MAIN_PATH}/lib/${PY_LIB} \
-    -DPYTHON_LIBRARIES:PATH=${MAIN_PATH}/lib/${PY_LIB} \
-    -DPYTHON_INCLUDE_DIR:PATH=${MAIN_PATH}/include/${PY_INC} \
-    -DPYTHON_INCLUDE_DIRS:PATH=${MAIN_PATH}/include/${PY_INC} \
-    -DVTK_INSTALL_PYTHON_MODULE_DIR:PATH=${MAIN_PATH}/lib/python${PY_VER}/site-packages \
-    "
-RUN cmake $PYTHON_OPTIONS -DCMAKE_BUILD_TYPE=Release -DVTK_WRAP_PYTHON=ON -DVTK_USE_X=OFF -DBUILD_SHARED_LIBS=ON -DVTK_OPENGL_HAS_OSMESA=ON -DVTK_DEFAULT_RENDER_WINDOW_OFFSCREEN=ON -DOPENGL_gl_LIBRARY=/usr/lib/libglapi.so -DOSMESA_INCLUDE_DIR=/usr/include/ -DOSMESA_LIBRARY=/usr/lib/libOSMesa.so -DCMAKE_INSTALL_PREFIX=/usr/ ../VTK-src/VTK* &&\
-    make -j 8 &&\
-    make install
+
+RUN cmake -DCMAKE_BUILD_TYPE=Release \
+          -DVTK_WRAP_PYTHON=ON \
+          -DVTK_USE_X=OFF \
+          -DBUILD_SHARED_LIBS=ON \
+          -DVTK_OPENGL_HAS_OSMESA=ON \
+          -DVTK_DEFAULT_RENDER_WINDOW_OFFSCREEN=ON \
+          -DOSMESA_INCLUDE_DIR=/usr/include/ \
+          -DOSMESA_LIBRARY=/usr/lib/libOSMesa.so \
+          -DCMAKE_INSTALL_PREFIX=/usr/ ../VTK-src/VTK*
+
+RUN  make -j 8 &&\
+     make install
+
+RUN mv /usr/bin/bk_python2 /usr/bin/python2
+RUN mv /usr/bin/bk_python /usr/bin/python
+
 RUN vtkpython --version
 ENV PYTHONPATH=/usr/lib/x86_64-linux-gnu/python3.7/site-packages/:/usr/bin/
 ENV LD_LIBRARY_PATH=/usr/bin/
