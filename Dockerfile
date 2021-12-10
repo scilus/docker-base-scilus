@@ -27,7 +27,10 @@ RUN apt-get update &&\
                        build-essential\
                        zlib1g-dev\
                        g++\
-                       gcc
+                       gcc\
+                       dc\
+                       bc\
+                       fonts-freefont-ttf
 
 WORKDIR /
 RUN wget https://github.com/Kitware/CMake/releases/download/v3.13.2/cmake-3.13.2.tar.gz &&\
