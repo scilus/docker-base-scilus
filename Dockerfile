@@ -162,7 +162,6 @@ ENV PYTHON_LIBS=/usr/lib/python3.7/config-3.7m-x86_64-linux-gnu/libpython3.7.so
 ENV PYTHON_LIBRARY=/usr/lib/python3.7/config-3.7m-x86_64-linux-gnu/libpython3.7.so
 RUN pip3 install -U setuptools
 
-RUN mv /usr/bin/python2 /usr/bin/bk_python2
 RUN mv /usr/bin/python /usr/bin/bk_python
 RUN ln -s /usr/bin/python3.7 /usr/bin/python
 
@@ -181,10 +180,8 @@ RUN cmake -DCMAKE_BUILD_TYPE=Release \
 RUN  make -j 8 &&\
      make install
 
-RUN mv /usr/bin/bk_python2 /usr/bin/python2
 RUN mv /usr/bin/bk_python /usr/bin/python
 
-RUN vtkpython --version
 ENV PYTHONPATH=/usr/lib/x86_64-linux-gnu/python3.7/site-packages/:/usr/bin/
 ENV LD_LIBRARY_PATH=/usr/bin/
 
