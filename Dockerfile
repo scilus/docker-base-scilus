@@ -163,6 +163,7 @@ ENV PYTHON_LIBRARY=/usr/lib/python3.7/config-3.7m-x86_64-linux-gnu/libpython3.7.
 RUN pip3 install -U setuptools
 
 RUN mv /usr/bin/python /usr/bin/bk_python
+RUN mv /usr/bin/python2 /usr/bin/bk_python2
 RUN ln -s /usr/bin/python3.7 /usr/bin/python
 
 WORKDIR /VTK-build
@@ -181,6 +182,7 @@ RUN  make -j 8 &&\
      make install
 
 RUN mv /usr/bin/bk_python /usr/bin/python
+RUN mv /usr/bin/bk_python2 /usr/bin/python2
 
 ENV PYTHONPATH=/usr/lib/x86_64-linux-gnu/python3.7/site-packages/:/usr/bin/
 ENV LD_LIBRARY_PATH=/usr/bin/
