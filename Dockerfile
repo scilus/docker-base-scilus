@@ -83,6 +83,8 @@ ENV FSLTCLSH=/usr/bin/tclsh
 ENV FSLWISH=/usr/bin/wish
 ENV POSSUMDIR=/usr/share/fsl
 
+RUN ln -s /usr/share/fsl/bin/eddy_cuda9.1 /usr/share/fsl/bin/eddy_cuda
+
 WORKDIR /
 RUN mkdir ants_build &&\
     git clone https://github.com/ANTsX/ANTs.git
