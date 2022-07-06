@@ -32,6 +32,8 @@ RUN apt-get update &&\
                        bc\
                        fonts-freefont-ttf
 
+RUN apt-get -y install nvidia-cuda-toolkit
+
 WORKDIR /
 RUN wget https://github.com/Kitware/CMake/releases/download/v3.13.2/cmake-3.13.2.tar.gz &&\
     tar -xvzf cmake-3.13.2.tar.gz &&\
