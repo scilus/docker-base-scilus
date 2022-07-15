@@ -32,6 +32,8 @@ RUN apt-get update &&\
                        bc\
                        fonts-freefont-ttf
 
+RUN apt-get -y install nvidia-cuda-toolkit
+
 WORKDIR /
 RUN wget https://github.com/Kitware/CMake/releases/download/v3.13.2/cmake-3.13.2.tar.gz &&\
     tar -xvzf cmake-3.13.2.tar.gz &&\
@@ -80,6 +82,8 @@ ENV FSLOUTPUTTYPE=NIFTI_GZ
 ENV FSLTCLSH=/usr/bin/tclsh
 ENV FSLWISH=/usr/bin/wish
 ENV POSSUMDIR=/usr/share/fsl
+
+RUN ln -s /usr/share/fsl/bin/eddy_cuda9.1 /usr/share/fsl/bin/eddy_cuda
 
 WORKDIR /
 RUN mkdir ants_build &&\
